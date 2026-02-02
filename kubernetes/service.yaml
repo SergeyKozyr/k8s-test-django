@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: djangoapp
+spec:
+  type: NodePort
+  selector:
+    name: djangoapp
+  ports:
+    - name: djangoapp-service-port
+      protocol: TCP
+      port: 80
+      targetPort: djangoapp-web
