@@ -76,7 +76,40 @@ $ docker compose build web
 
 `DATABASE_URL` -- адрес для подключения к базе данных PostgreSQL. Другие СУБД сайт не поддерживает. [Формат записи](https://github.com/jacobian/dj-database-url#url-schema).
 
-## Как добавить переменные окружения в Secrets
+## Как развернуть в minikube
+
+1. Запустить кластер
+```sh
+minikube start
+kubectl config use-context minikube
+```
+
+2. Собрать образ приложения
 ```shell
-kubectl create secret generic djangoapp-secret --from-literal=SECRET_KEY='my_secret_key...' --from-literal=DATABASE_URL='postgresql://...'
+cd backend_main_django && minikube image build -t djangoapp .
+```
+
+3. Добавить переменные окружения через secrets
+```shell
+kubectl create secret generic djangoapp-secret --from-literal=SECRET_KEY='my_secret_key...' --from-literal=DATABASE_URL='postgresql://...' --from-literal=DEBUG='false'
+```
+
+4. Установить расширение
+```bash
+minikube addons enable ingress
+```
+
+5. Узнать ip адрес minikube
+```bash
+minikube ip
+```
+
+6. Прописать домен в /etc/hosts/
+```
+<MINIKUBE_IP> star-burger.test
+```
+
+7. Применить манифесты
+```shell
+kubectl apply -Rf kubernetes 
 ```
