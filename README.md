@@ -111,5 +111,5 @@ minikube ip
 
 7. Применить манифесты
 ```shell
-kubectl apply -Rf kubernetes 
+kubectl apply -Rf deploy/local-minikube 
 ```
