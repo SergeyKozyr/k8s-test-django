@@ -148,3 +148,5 @@ docker build backend_main_django/ -t astratest/django-k8s:$(git rev-parse --shor
 ```shell
 docker image push astratest/django-k8s -a
 ```
+
+3. Обновить версию образа в манифестах
