@@ -1,0 +1,35 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: djangoapp
+  labels:
+    name: djangoapp
+spec:
+  selector:
+    matchLabels:
+      name: djangoapp
+  template:
+    metadata:
+      labels:
+        name: djangoapp
+    spec:
+      containers:
+        - name : web
+          image: astratest/django-k8s:2779ea7
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: djangoapp-secret
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: psql-cert
+              mountPath: "/root/.postgresql/"
+      volumes:
+        - name: psql-cert
+          secret:
+            secretName: postgres
+            items:
+            - key: root.crt
+              path: root.crt
+            defaultMode: 429

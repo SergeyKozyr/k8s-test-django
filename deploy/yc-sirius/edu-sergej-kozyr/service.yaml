@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: djangoapp
+  labels:
+    name: djangoapp
+spec:
+  type: ClusterIP
+  selector:
+    name: djangoapp
+  ports:
+    - name: djangoapp-web
+      port: 8080
+      targetPort: 80

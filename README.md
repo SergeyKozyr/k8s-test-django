@@ -1,4 +1,5 @@
 # Django Site
+Live demo - https://edu-sergej-kozyr.yc-sirius-dev.pelid.team/admin/
 
 Докеризированный сайт на Django для экспериментов с Kubernetes.
 
@@ -112,4 +113,38 @@ minikube ip
 7. Применить манифесты
 ```shell
 kubectl apply -Rf deploy/local-minikube 
+```
+
+## Как развернуть в кластере
+
+1. Создать Secret с сертификатом для postgres
+```shell
+wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" --output-document ./root.crt && chmod 0655 ./root.crt
+kubectl create secret generic psql-cert --from-file=root.crt=./root.crt 
+```
+
+2. Создать Secret с переменными окружения
+```shell
+kubectl create secret generic djangoapp-secret \
+    --from-literal=SECRET_KEY='...' \
+    --from-literal=DATABASE_URL='postgres://...' \
+    --from-literal=DEBUG='false' \
+    --from-literal=ALLOWED_HOSTS='...'
+```
+
+3. Применить манифесты
+```shell
+kubectl apply -Rf deploy/yc-sirius/edu-sergej-kozyr 
+```
+
+## Как выпустить новую версию
+
+1. Собрать docker образ
+```shell
+docker build backend_main_django/ -t astratest/django-k8s:$(git rev-parse --short HEAD)
+```
+
+2. Опубликовать новую версию docker образа
+```shell
+docker image push astratest/django-k8s -a
 ```
